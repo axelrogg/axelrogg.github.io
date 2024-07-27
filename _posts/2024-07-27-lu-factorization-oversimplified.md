@@ -370,10 +370,70 @@ for (int j = 0; j < n; j++) {
 }
 ```
 
-This is a very straight forward implementation of Eq. 18. It does the job, so it's
-good enough for me. At least for now.
+This is a very straight forward implementation of Eq. 18. It does the job, so
+it's good enough for me. At least for now.
 
 Now, on to the last step.
+
+
+# Backward substitution
+
+Backward substitution is very similar to the previous algorithm. The system we
+need to solve is now $U {\bf x} = {\bf y}$. Remember that because we use Crout's
+algorithm to find $L$ and $U$, the elements on the diagonal of $U$ are all $1$s.
+
+$$
+\begin{bmatrix}
+   1      & u_{12} & u_{13} & \cdots & u_{1n} \\
+   0      & 1      & u_{23} & \cdots & u_{2n} \\
+   \vdots & \vdots & \ddots & \vdots &        \\
+   0      & 0      & 0      & \cdots & 1      \\
+\end{bmatrix}
+\begin{bmatrix}
+    x_{1} \\
+    x_{2} \\
+    \vdots \\
+    x_{n} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+    y_{1} \\
+    y_{2} \\
+    \vdots \\
+    y_{n} \\
+\end{bmatrix}
+$$
+
+We can skip the first couple of values, and only look at the general equation
+for any element of $\bf x$:
+
+$$
+\tag{19}
+x_j = \frac{y_j - \sum_{k=j + 1}^{n} u_{jk} \, x_k}{u_{jj}}
+$$
+
+Since $u_{jj}$ is always $1$ for all valid values of $j$, we can simplify this
+by the following relationship.
+
+$$
+\tag{20}
+x_j = y_j - \sum_{k=j + 1}^{n} u_{jk} \, x_k
+$$
+
+You can see the code below.
+
+```C
+// Let's assume that `x` was defined earlier.
+for (int j = n - 1; i > n; i--) {
+    float sum = 0;
+    for (int k = j + 1; k < n; k++) {
+        sum += matrix[j][k] * x[k];
+    }
+    // No division needed here because Crout's algorithm sets all elements
+    // of the diagonal of U to 1.
+    x[j] = y[j] - sum;
+}
+```
 
 
 # Conclusion
