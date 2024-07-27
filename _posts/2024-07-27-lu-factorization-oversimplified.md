@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "LU factorization oversimplified"
+title:  "LU Factorization Oversimplified"
 ---
 
 # Introduction
