@@ -14,7 +14,7 @@ notice that I make plenty of statements without providing their mathematical
 proofs. I will also make plenty of assumptions when implementing the algorithms.
 Finally, you will find that these implementations are very *naïve*. The reason
 for all of this is that I just found out about LU factorization, so I haven't
-delved that deep into it. I will, but not yet. Baby steps.
+delved that deep into it--yet. Baby steps.
 
 
 # My Personal Motivation
@@ -39,11 +39,10 @@ output of the circuit elements, such as resistors, and their input. Even when
 components are not linear (diodes, transistors, and more), their output-to-input
 relationship is *simplified* by creating linear models that allow engineers to
 be able to treat those elements as linear, even if they are not in reality. I
-won't dive into the reasons why we care so much about linear relationships when
-it comes to electric circuit analysis, but it is a big deal. Many analysis
-techniques rely on this. Engineers love simplicity (even artificial simplicity).
-Now that we know how important it is to solve these systems let's talk about the
-how.
+won't dive into the reasons why linear relationships are crucial in electric
+circuit analysis, but they are a big deal. Many analysis techniques rely on 
+this. Engineers love simplicity (even artificial simplicity). Now that we know
+how important it is to solve these systems let's talk about the how.
 
 
 # LU Factorization
@@ -183,7 +182,7 @@ $$
 $$
 
 We have $n$ more unknowns than equations. Crout's algorithm mitigates this
-problem by setting all the elements of the diagonal of $U$ to $1$s. One could
+problem by setting all diagonal elements of $U$ to $1$. One could
 choose a value other than $1$ as long as it's not $0$, but as you will see,
 choosing $1$ reduces our computational effort. With this in mind, Eq. 6 now
 looks like this:
@@ -211,8 +210,8 @@ $$
 \end{bmatrix}
 $$
 
-Say that we perform the matrix multiplication from the equation above, then A
-would be
+If we perform the matrix multiplication from the equation above, then $A$
+becomes
 
 $$
 A =
@@ -370,8 +369,8 @@ for (int j = 0; j < n; j++) {
 }
 ```
 
-This is a very straight forward implementation of Eq. 18. It does the job, so
-it's good enough for me. At least for now.
+This is a very straightforward implementation of Eq. 18. It works well enough
+for the current purpose.
 
 Now, on to the last step.
 
@@ -424,7 +423,7 @@ You can see the code below.
 
 ```C
 // Let's assume that `x` was defined earlier.
-for (int j = n - 1; i > n; i--) {
+for (int j = n - 1; j > n; j--) {
     float sum = 0;
     for (int k = j + 1; k < n; k++) {
         sum += matrix[j][k] * x[k];
