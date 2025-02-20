@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+import { readableDate } from "../lib/utils/date.ts";
+
+const posts: Post[] = Object.values(import.meta.glob("./posts/*.md", { eager: true })).map((post: any) => ({
+    ...post,
+    frontmatter : {
+        ...post.frontmatter,
+        created_at: new Date(post.frontmatter.created_at),
+        last_updated_at: new Date(post.frontmatter.created_at),
+    },
+}))
+
+
+interface PostFrontmatterProps {
+    layout: string
+    title: string
+    description: string
+    created_at: Date
+    last_updated_at: Date
+}
+
+interface Post {
+    frontmatter: PostFrontmatterProps
+    created_at_readable: string
+    last_update_at_readable: string
+    url: string
+    // The following attributes are not used but they're here for pedantic purposes.
+    file: string
+    rawContent: Function,
+    compiledContent: Promise<any>
+    getHeadings: Function
+    Content: any  // Don't know what this is; don't care
+    default: any  // Don't know what this is; don't care
+}
+    
+---
+
+<Layout>
+    <h2 class="text-2xl font-bold my-5">Posts</h2>
+    <ul class="space-y-10">
+        {posts.map((post: Post) => {
+            return (
+                <li>
+                    <p>{readableDate(post.frontmatter.created_at)}</p>
+                    <a class="font-bold text-xl" href={post.url}>{post.frontmatter.title}</a>
+                    <p>{post.frontmatter.description}</p>
+                </li>
+            )
+        })}
+    </ul>
+
+</Layout>

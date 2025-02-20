@@ -1,0 +1,89 @@
+---
+import BaseLayout from "./BaseLayout.astro"
+import { readableDate } from "../lib/utils/date.ts";
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout>
+    <h1 class="font-bold text-3xl text-center my-3">
+        {frontmatter.title}
+    </h1>
+    <p>
+        <span class="font-bold">Published: </span>
+        {readableDate(new Date(frontmatter.created_at))}
+    </p>
+    <p>
+        <span class="font-bold">Last edit: </span>
+        {readableDate(new Date(frontmatter.last_updated_at))}
+    </p>
+    <div class="flex flex-row space-x-4">
+        {frontmatter.tags.map((tag: any) =>
+            <p class="px-2 py-1 bg-violet-800 rounded-lg">
+                {tag}
+            </p>
+        )}
+    </div>
+    <slot />
+    <div class="mt-10"/>
+</BaseLayout>
+
+<style is:inline>
+    h1 {
+        font-weight: bold;
+        font-size: 1.5em;
+        padding-top: 0.3em;
+        padding-bottom: 0.3em;
+    }
+
+    pre {
+        border-width: 1em;
+        border-radius: 2em;
+        border-color: #000;
+        padding: 1em 1em 1em 1em;
+    }
+
+    .katex-display {
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+        max-width: 100%;
+        padding-bottom: 0.5rem;
+    }
+    
+    .katex-display > .katex {
+        flex-grow: 1;
+    }
+    
+    h2 {
+        font-weight: bold;
+        font-size: 1.2em;
+        padding-top: 0.5em;
+        padding-bottom: 0.3em;
+    }
+    
+    p {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+    
+    ol {
+        margin-top: 0.5em;
+        margin-left: 1.5em;
+    }
+    
+    ul {
+        1margin-top: 0.5em;
+        margin-left: 1.5em;
+    }
+    
+    ol li {
+        list-style-position: outside;
+        list-style-type: decimal;
+        padding-left: 1em;
+    }
+    
+    ul li {
+        list-style-type: disc;
+        list-style-position: outside;
+    }
+</style>

@@ -1,6 +1,10 @@
 ---
-layout: post
-title:  "LU Factorization Oversimplified"
+layout: ../../layouts/PostLayout.astro
+title: LU Factorization Oversimplified
+description: An oversimplification of a technique to solve systems of linear equations
+created_at: 2024-07-27
+last_updated_at: 2024-12-28
+tags: [circuit-simulation, code]
 ---
 
 # Introduction
@@ -11,11 +15,10 @@ not clear yet, being able to find solutions to these systems is a crucial task
 in engineering. In this article, I will try to explain the main aspects of it
 and a way to implement a simplified algorithm in C. The careful reader will
 notice that I make plenty of statements without providing their mathematical
-proofs. I will also make plenty of assumptions when implementing the algorithms.
-Finally, you will find that these implementations are very *naïve*. The reason
-for all of this is that I just found out about LU factorization, so I haven't
-delved that deep into it--yet. Baby steps.
-
+proofs. I will also make plenty of assumptions when implementing the
+algorithms. Finally, you will find that these implementations are very *naïve*.
+The reason for all of this is that I just found out about LU factorization, so
+I haven't delved that deep into it--yet. Baby steps.
 
 # My Personal Motivation
 
@@ -28,32 +31,31 @@ of PTSD towards it. Maybe someday I will return to that, but for now, I will
 only focus on electric circuits. As an electrical engineering student, it suits
 me better.
 
-
 # Systems of Linear Equations
 
-A lot of things are involved in any circuit simulator, even the rudimentary ones.
-There are many algorithms that perform different tasks, and a critical one is an
-algorithm to solve systems of linear equations. The reason is that many electric
-circuits are linear in nature because of the linear relationships between the
-output of the circuit elements, such as resistors, and their input. Even when
-components are not linear (diodes, transistors, and more), their output-to-input
-relationship is *simplified* by creating linear models that allow engineers to
-be able to treat those elements as linear, even if they are not in reality. I
-won't dive into the reasons why linear relationships are crucial in electric
-circuit analysis, but they are a big deal. Many analysis techniques rely on 
-this. Engineers love simplicity (even artificial simplicity). Now that we know
-how important it is to solve these systems let's talk about the how.
-
+A lot of things are involved in any circuit simulator, even the rudimentary
+ones.  There are many algorithms that perform different tasks, and a critical
+one is an algorithm to solve systems of linear equations. The reason is that
+many electric  circuits are linear in nature because of the linear
+relationships between the output of the circuit elements, such as resistors,
+and their input. Even when  components are not linear (diodes, transistors, and
+more), their output-to-input relationship is *simplified* by creating linear
+models that allow engineers to be able to treat those elements as linear, even
+if they are not in reality. I won't dive into the reasons why linear
+relationships are crucial in electric circuit analysis, but they are a big
+deal. Many analysis techniques rely on  this. Engineers love simplicity (even
+artificial simplicity). Now that we know how important it is to solve these
+systems let's talk about the how.
 
 # LU Factorization
 
 For those of us who have taken a basic Linear Algebra class, there are two main
 systematic ways to manually solve a system (Gaussian Elimination and Cramer's
 rule). However, what's the best approach to solve a system using a computer?
-That's where LU factorization comes into play. LU decomposition or factorization
-is a technique that allows us to factor an $n \times n$ non-singular matrix $A$
-as the product of two matrices $L$ and $U$. We can express this with the
-following matrix equation.
+That's where LU factorization comes into play. LU decomposition or
+factorization is a technique that allows us to factor an $n \times n$
+non-singular matrix $A$ as the product of two matrices $L$ and $U$. We can
+express this with the following matrix equation.
 
 $$
 \tag{1}
@@ -65,7 +67,7 @@ upper triangular $n \times n$ non-singular matrix. Or,
 
 $$
 \tag{2}
-A = LU = 
+A = LU =
 \begin{bmatrix}
     l_{11} & 0      & 0      & \cdots & 0      \\
     l_{21} & l_{22} & 0      & \cdots & 0      \\
@@ -113,16 +115,16 @@ first need to factor $A$ into $LU$. Then, solve Eq. 5, and finally solve
 $U { \bf x } = { \bf y }$. That's it.
 
 We can summarize the entire process in three steps:
+
 1.  $LU$ factorization.
 2.  Forward substitution (solving the equation $L { \bf y } = { \bf b }$).
 3.  Backward substitution (solving the equation $U { \bf x } = { \bf y }$).
 
-
 # How to Factorize $A$?
-There are a few ways to do this as far as I know, but the one we will cover here
-is Crout's algorithm (for no particular reason, other than the fact that I read
-about it first). The version of this algorithm I will explain assumes that no
-pivoting is required to find a solution. The pivoting process is out of the
+There are a few ways to do this as far as I know, but the one we will cover
+here is Crout's algorithm (for no particular reason, other than the fact that I
+read about it first). The version of this algorithm I will explain assumes that
+no pivoting is required to find a solution. The pivoting process is out of the
 scope of this article because I want to keep it simple, but the TL;DR is that
 sometimes we need to rearrange the rows and/or columns of a matrix at a certain
 point to be able to find a solution.
@@ -145,7 +147,7 @@ $$
    \vdots & \vdots & \ddots & \vdots & \vdots \\
    0      & 0      & 0      & \cdots & u_{nn} \\
 \end{bmatrix}
-= 
+=
 \begin{bmatrix}
    a_{11} & a_{12} & \cdots & a_{1n} \\
    a_{21} & a_{22} & \cdots & a_{2n} \\
@@ -182,10 +184,9 @@ $$
 $$
 
 We have $n$ more unknowns than equations. Crout's algorithm mitigates this
-problem by setting all diagonal elements of $U$ to $1$. One could
-choose a value other than $1$ as long as it's not $0$, but as you will see,
-choosing $1$ reduces our computational effort. With this in mind, Eq. 6 now
-looks like this:
+problem by setting all diagonal elements of $U$ to $1$. One could choose a
+value other than $1$ as long as it's not $0$, but as you will see, choosing $1$
+reduces our computational effort. With this in mind, Eq. 6 now looks like this:
 
 $$
 \tag{10}
@@ -201,7 +202,7 @@ $$
    \vdots & \vdots & \ddots & \vdots & \vdots \\
    0      & 0      & 0      & \cdots & 1 \\
 \end{bmatrix}
-= 
+=
 \begin{bmatrix}
    a_{11} & a_{12} & \cdots & a_{1n} \\
    a_{21} & a_{22} & \cdots & a_{2n} \\
@@ -271,8 +272,9 @@ u_{kj} = \bigg( a_{kj} - \sum_{t = 1}^{k-1} l_{kt} \, u_{tj}\bigg) \bigg/ l_{kk}
 $$
 
 Notice two things from Eqs. 14 and 15:
-*   $u_{ii}$ is nowhere to be found. This is because the value was already known
-    to be $1$.
+*   $u_{ii}
+$ is nowhere to be found. This is because the value was already known to be $1
+$.
 *   We can alternate between column and row computations.
 
 There is one more thing until we see some code. We don't have to store $L$ and
@@ -281,7 +283,7 @@ is an $n \times n$ identity matrix.
 
 We can now see what the code looks like:
 
-```C
+```c
 for (int k = 0; k < n; k++) {
     for (int i = k; i < n; i++) {
         float sum = 0;
@@ -357,7 +359,7 @@ for all $j = 1, \dots, n$.
 
 Let's take a look the code.
 
-```C
+```c
 // `y` might've come from a function argument or from a `malloc` call.
 // Remember that `y` must have enough space for `n` elements.
 for (int j = 0; j < n; j++) {
@@ -378,8 +380,9 @@ Now, on to the last step.
 # Backward substitution
 
 Backward substitution is very similar to the previous algorithm. The system we
-need to solve is now $U {\bf x} = {\bf y}$. Remember that because we use Crout's
-algorithm to find $L$ and $U$, the elements on the diagonal of $U$ are all $1$s.
+need to solve is now $U {\bf x} = {\bf y}$. Remember that because we use
+Crout's algorithm to find $L$ and $U$, the elements on the diagonal of $U$ are
+all $1$s.
 
 $$
 \begin{bmatrix}
@@ -421,7 +424,7 @@ $$
 
 You can see the code below.
 
-```C
+```c
 // Let's assume that `x` was defined earlier.
 for (int j = n - 1; j > n; j--) {
     float sum = 0;
@@ -434,7 +437,6 @@ for (int j = n - 1; j > n; j--) {
 }
 ```
 
-
 # Conclusion
 
 This article was meant to condense all the ideas I've been dealing with for the
@@ -445,9 +447,8 @@ many of ideas behind their approach to solving problems, but it focuses more on
 implementations and less on being rigorous. That's the book I'm reading right
 now and where I found 99% of the information used here.
 
-
 # References
 
 1.  F. N. Najm, Circuit simulation. Hoboken, N.J.: Wiley, 2010.
 2.  D. C. Lay, S. R. Lay, and J. Mcdonald, Linear algebra and its applications.
-    Boston: Pearson, 2020.
+
