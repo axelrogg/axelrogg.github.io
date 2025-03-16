@@ -4,6 +4,31 @@ import { readableDate } from "../lib/utils/date.ts";
 const { frontmatter } = Astro.props;
 ---
 
+<script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+        // This handles the copy code block to clipboard action.
+        document.querySelectorAll(".copy-button").forEach(button => {
+            button.addEventListener("click", () => {
+                // Possibly naive property and array element accessing.
+                // Should I add checks to this?
+                const codeElement = button.parentElement.parentElement.lastElementChild.children[0].children[0]
+                const codeContent = codeElement.innerText
+                navigator.clipboard.writeText(codeContent)
+                    // Modify the following function to add an animation when user clicks to copy code block
+                    .then(() => {
+                        //button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>`
+
+                        //setTimeout(() => {
+                        //    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>`;
+                        //}, 2000)
+                    })
+                    .catch(error => console.error("Copy failed", error))
+                console.log(codeElement.innerText)
+            })
+        })
+    })
+</script>
+
 <BaseLayout>
     <h1 class="font-bold text-3xl text-center my-3">
         {frontmatter.title}
@@ -28,20 +53,6 @@ const { frontmatter } = Astro.props;
 </BaseLayout>
 
 <style is:inline>
-    h1 {
-        font-weight: bold;
-        font-size: 1.5em;
-        padding-top: 0.3em;
-        padding-bottom: 0.3em;
-    }
-
-    pre {
-        border-width: 1em;
-        border-radius: 2em;
-        border-color: #000;
-        padding: 1em 1em 1em 1em;
-    }
-
     .katex-display {
         display: flex;
         align-items: center;
@@ -52,38 +63,5 @@ const { frontmatter } = Astro.props;
     
     .katex-display > .katex {
         flex-grow: 1;
-    }
-    
-    h2 {
-        font-weight: bold;
-        font-size: 1.2em;
-        padding-top: 0.5em;
-        padding-bottom: 0.3em;
-    }
-    
-    p {
-        margin-top: 0.5em;
-        margin-bottom: 0.5em;
-    }
-    
-    ol {
-        margin-top: 0.5em;
-        margin-left: 1.5em;
-    }
-    
-    ul {
-        1margin-top: 0.5em;
-        margin-left: 1.5em;
-    }
-    
-    ol li {
-        list-style-position: outside;
-        list-style-type: decimal;
-        padding-left: 1em;
-    }
-    
-    ul li {
-        list-style-type: disc;
-        list-style-position: outside;
     }
 </style>
