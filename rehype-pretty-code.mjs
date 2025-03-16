@@ -27,7 +27,6 @@ export default function rehypePrettyCode() {
             "stroke-width": "2",
             "stroke-linecap": "round",
             "stroke-linejoin": "round",
-            className: ["copy-button hover:cursor-pointer"],
         },
         children: [
             { type: "element", tagName: "rect", properties: { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2" }, children: [] },
@@ -63,7 +62,7 @@ export default function rehypePrettyCode() {
         type: "element",
         tagName: "div",
         properties: {
-            className: ["group relative hover:cursor-pointer"]
+            className: ["copy-button group relative hover:cursor-pointer"]
         },
         children: [
             copyIconSvg,
@@ -85,7 +84,6 @@ export default function rehypePrettyCode() {
              */
             function (node, index, parent) {
                 if (node.tagName === "pre" && parent && typeof index === "number") {
-                    console.log(node)
                     /** @type {Element} */
                     const codeBlockBannerDiv= {
                         type: "element",
