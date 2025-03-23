@@ -20,6 +20,17 @@ export default function rehypePrettyCode() {
              * @param {import("unist").Parent | null} parent - The parent node.
              * @returns {void}             */
             function (node, index, parent) {
+                if (node.tagName === "p") {
+                    parent.children[index] = {
+                        type: "element",
+                        tagName: node.tagName,
+                        properties: {
+                            className: "my-1"
+                        },
+                        children: node.children
+                    }
+
+                }
                 if (node.tagName === "h1") {
                     parent.children[index] = {
                         type: "element",
