@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-from io import TextIOWrapper
+from dataclasses import dataclass
 import argparse
 
 
-def extract_raw_props(fileobj: TextIOWrapper) -> list[str]:
+def extract_raw_post_content(text: str) -> tuple[list[str], list[str]]:
     """Extracts the raw (unprocessed) frontmatter props from `fileobj`.
 
     This function assumes the convention that any blog post file will always
@@ -12,48 +12,58 @@ def extract_raw_props(fileobj: TextIOWrapper) -> list[str]:
     discarded and will not be part of the processed file.
     """
 
-    props = []
+    props, body = [], []
     in_props = False
 
-    for line in fileobj:
-        stripped = line.strip()
+    content = text.split("\n")
+    i = 0
+    while i < len(content):
+        stripped = content[i].strip()
         if "---" == stripped:
             if in_props:
+                i += 1
                 break
             in_props = True
+            i += 1
             continue
         if in_props:
             props.append(stripped)
-
-    return props
-
-
-def extract_raw_content(fileobj: TextIOWrapper) -> list[str]:
-    """Extracts the raw (unprocessed) blog post content from `fileobj`."""
-    raw_content = []
-    for line in fileobj:
-        raw_content.append(line)
-
-    # now remove end-of-file newlines that might remain
-    i = len(raw_content) - 1
-    while i > 0 and raw_content[i] == "\n":
-        raw_content.pop()
-        i -= 1
-    return raw_content
+        i += 1
 
 
-def parse_props(raw_props: list[str]) -> dict[str, str]:
+    while i < len(content):
+        body.append(content[i])
+        i += 1
+
+    j = len(body) - 1
+    while j > 0 and (body[j] == "\n" or body[j] == ""):
+        body.pop()
+        j -= 1
+
+    return props, body 
+
+
+@dataclass
+class BlogPostProps:
+    title: str
+    description: str
+    created_at: str
+    last_updated_at: str
+    tags: str
+    layout: str = "../../layouts/PostLayout.astro"
+
+def parse_props(raw_props: list[str]) -> BlogPostProps:
     """Parses a list of raw (unprocessed) frontmatter props and returns a
     dictionary with clean prop values.
     """
 
     props = {
         "layout": "../../layouts/PostLayout.astro",
-    	"title": None,
-    	"description": None,
-    	"created_at": None,
-    	"last_updated_at": None,
-    	"tags": None,
+    	"title": "",
+    	"description": "",
+    	"created_at": "",
+    	"last_updated_at": "",
+    	"tags": "",
     }
 
     tags = []
@@ -68,7 +78,11 @@ def parse_props(raw_props: list[str]) -> dict[str, str]:
             key, value = map(str.strip, line.split(":", 1))
             props[key] = value
     props["tags"] = f"[{', '.join(tags)}]"
-    return props
+
+    for val in props.values():
+        assert val != ""
+
+    return BlogPostProps(**props)
 
 
 def parse_content(raw_content: list[str], max_line_length: int = 80) -> list[str]:
@@ -148,7 +162,7 @@ def line_split(line: str, max_len) -> list[str]:
     return split
 
 
-def write_formatted(filename: str, props: dict[str, str], content: list[str]) -> None:
+def write_formatted(filename: str, props: BlogPostProps, content: list[str]) -> None:
     "Writes a formatted version of a blog post to `filename`."
 
     with open(filename, "w", encoding="utf-8") as file:
@@ -181,11 +195,12 @@ def main():
     MAX_LINE_LENGTH = args.max_length if args.max_length is not None else 80
 
     with open(SOURCE_FILE, encoding="utf-8") as file:
-        raw_props = extract_raw_props(file)
-        raw_content = extract_raw_content(file)
+        raw_file_content = file.read()
+
+    raw_props, raw_body = extract_raw_post_content(raw_file_content)
 
     props = parse_props(raw_props)
-    content = parse_content(raw_content, MAX_LINE_LENGTH)
+    content = parse_content(raw_body, MAX_LINE_LENGTH)
     write_formatted(OUTPUT_FILE, props, content)
 
 if __name__ == "__main__":

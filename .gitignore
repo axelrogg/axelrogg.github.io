@@ -26,3 +26,6 @@ pnpm-debug.log*
 # todos
 TODO.txt
 todo.txt
+
+# python
+/scripts/__pycache__/
