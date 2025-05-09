@@ -1,7 +1,6 @@
 ---
-layout: ../../layouts/PostLayout.astro
 title: LU Factorization Oversimplified
-description: An oversimplification of a technique to solve systems of linear equations
+description: An oversimplification of a technique to solve systems of linear equations.
 created_at: 2024-07-27
 last_updated_at: 2024-12-28
 tags: [circuit-simulation, code]
@@ -16,7 +15,7 @@ in engineering. In this article, I will try to explain the main aspects of it
 and a way to implement a simplified algorithm in C. The careful reader will
 notice that I make plenty of statements without providing their mathematical
 proofs. I will also make plenty of assumptions when implementing the
-algorithms. Finally, you will find that these implementations are very *naïve*.
+algorithms. Finally, you will find that these implementations are very _naïve_.
 The reason for all of this is that I just found out about LU factorization, so
 I haven't delved that deep into it--yet. Baby steps.
 
@@ -34,16 +33,16 @@ me better.
 # Systems of Linear Equations
 
 A lot of things are involved in any circuit simulator, even the rudimentary
-ones.  There are many algorithms that perform different tasks, and a critical
+ones. There are many algorithms that perform different tasks, and a critical
 one is an algorithm to solve systems of linear equations. The reason is that
-many electric  circuits are linear in nature because of the linear
+many electric circuits are linear in nature because of the linear
 relationships between the output of the circuit elements, such as resistors,
-and their input. Even when  components are not linear (diodes, transistors, and
-more), their output-to-input relationship is *simplified* by creating linear
+and their input. Even when components are not linear (diodes, transistors, and
+more), their output-to-input relationship is _simplified_ by creating linear
 models that allow engineers to be able to treat those elements as linear, even
 if they are not in reality. I won't dive into the reasons why linear
 relationships are crucial in electric circuit analysis, but they are a big
-deal. Many analysis techniques rely on  this. Engineers love simplicity (even
+deal. Many analysis techniques rely on this. Engineers love simplicity (even
 artificial simplicity). Now that we know how important it is to solve these
 systems let's talk about the how.
 
@@ -121,6 +120,7 @@ We can summarize the entire process in three steps:
 3.  Backward substitution (solving the equation $U { \bf x } = { \bf y }$).
 
 # How to Factorize $A$?
+
 There are a few ways to do this as far as I know, but the one we will cover
 here is Crout's algorithm (for no particular reason, other than the fact that I
 read about it first). The version of this algorithm I will explain assumes that
@@ -272,10 +272,11 @@ u_{kj} = \bigg( a_{kj} - \sum_{t = 1}^{k-1} l_{kt} \, u_{tj}\bigg) \bigg/ l_{kk}
 $$
 
 Notice two things from Eqs. 14 and 15:
-*   $u_{ii}
+
+- $u_{ii}
 $ is nowhere to be found. This is because the value was already known to be $1
 $.
-*   We can alternate between column and row computations.
+- We can alternate between column and row computations.
 
 There is one more thing until we see some code. We don't have to store $L$ and
 $U$ separately in memory. We can create one matrix $S = L + U - I$, where $I$
@@ -376,7 +377,6 @@ for the current purpose.
 
 Now, on to the last step.
 
-
 # Backward substitution
 
 Backward substitution is very similar to the previous algorithm. The system we
@@ -424,7 +424,7 @@ $$
 
 You can see the code below.
 
-```c
+```c title="Backward substitution"
 // Let's assume that `x` was defined earlier.
 for (int j = n - 1; j > n; j--) {
     float sum = 0;
@@ -440,7 +440,7 @@ for (int j = n - 1; j > n; j--) {
 # Conclusion
 
 This article was meant to condense all the ideas I've been dealing with for the
-past week. Najm's *Circuit Simulation* book has been an absolute treat to read
+past week. Najm's _Circuit Simulation_ book has been an absolute treat to read
 and cannot recommend it enough for people who want to get into circuit
 simulations or simulations in general. It does contain theorems that justify
 many of ideas behind their approach to solving problems, but it focuses more on
@@ -451,4 +451,3 @@ now and where I found 99% of the information used here.
 
 1.  F. N. Najm, Circuit simulation. Hoboken, N.J.: Wiley, 2010.
 2.  D. C. Lay, S. R. Lay, and J. Mcdonald, Linear algebra and its applications.
-

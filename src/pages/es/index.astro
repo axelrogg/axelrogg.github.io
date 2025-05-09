@@ -1,8 +1,8 @@
 ---
 import { getCollection } from "astro:content";
-import MainLayout from "../layouts/MainLayout.astro";
-import type { BlogPost } from "../types/blog-post";
-import { getBlogCollectionPageParams } from "../lib/utils/collections";
+import MainLayout from "../../layouts/MainLayout.astro";
+import type { BlogPost } from "../../types/blog-post";
+import { getBlogCollectionPageParams } from "../../lib/utils/collections";
 
 const blogCollection = await getCollection("blog");
 
@@ -10,7 +10,7 @@ const blogPosts: BlogPost[] = [];
 
 for (const page of blogCollection) {
     const { lang, url } = getBlogCollectionPageParams(page);
-    if (lang !== "en") continue;
+    if (lang !== "es") continue;
 
     blogPosts.push({
         title: page.data.title,
@@ -22,4 +22,4 @@ for (const page of blogCollection) {
 }
 ---
 
-<MainLayout language="en" blogPosts={blogPosts} />
+<MainLayout language="es" blogPosts={blogPosts} />
