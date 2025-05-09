@@ -1,0 +1,11 @@
+# npm
+node_modules
+*.log
+*.gz
+
+# Build
+dist
+
+pnpm-lock.yaml
+.github/
+src/styles/
