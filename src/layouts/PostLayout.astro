@@ -1,57 +1,30 @@
 ---
-import BaseLayout from "./BaseLayout.astro";
-import { DateUtils } from "../lib/utils/date.ts";
-import type { SupportedLanguage } from "../lib/i18n/ui";
-import { useTranslations } from "../lib/i18n/utils";
-
-interface Props {
-    language: SupportedLanguage;
-    title: string;
-    createdAt: Date;
-    lastUpdatedAt: Date;
-    description: string;
-    tags: string[];
-}
-
-const { description, language, title, createdAt, lastUpdatedAt, tags } =
-    Astro.props;
-const localizedUI = useTranslations(language);
+import BaseLayout from "./BaseLayout.astro"
+import { readableDate } from "../lib/utils/date.ts";
+const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout>
-    <div class="space-y-3">
-        <h1 class="font-bold text-3xl text-center">
-            {title}
-        </h1>
-        <h3 class="font-semibold text-lg text-center">
-            {description}
-        </h3>
-        <div class="mt-10">
-            <p>
-                <span class="font-bold"
-                    >{localizedUI.blog.firstPublished}:{" "}</span
-                >
-                {DateUtils.readableDate(createdAt, language)}
+    <h1 class="font-bold text-3xl text-center my-3">
+        {frontmatter.title}
+    </h1>
+    <p>
+        <span class="font-bold">Published: </span>
+        {readableDate(new Date(frontmatter.created_at))}
+    </p>
+    <p>
+        <span class="font-bold">Last edit: </span>
+        {readableDate(new Date(frontmatter.last_updated_at))}
+    </p>
+    <div class="flex flex-row space-x-4 my-3">
+        {frontmatter.tags.map((tag: any) =>
+            <p class="px-2 py-1 bg-violet-800 rounded-lg">
+                {tag}
             </p>
-            <p>
-                <span class="font-bold"
-                    >{localizedUI.blog.lastUpdated}:{" "}</span
-                >
-                {DateUtils.readableDate(lastUpdatedAt, language)}
-            </p>
-        </div>
-        <div class="flex flex-row space-x-4">
-            {
-                tags.map((tag: any) => (
-                    <p class="px-2 py-1 bg-violet-800 rounded-lg">{tag}</p>
-                ))
-            }
-        </div>
+        )}
     </div>
-
-    <div class="h-10"></div>
     <slot />
-    <div class="h-10"></div>
+    <div class="mt-10"/>
 </BaseLayout>
 
 <style is:inline>
@@ -62,12 +35,13 @@ const localizedUI = useTranslations(language);
         max-width: 100%;
         padding-bottom: 0.5rem;
     }
-
+    
     .katex-display > .katex {
         flex-grow: 1;
     }
 
     .expressive-code {
         margin-block: 0.5rem;
+
     }
 </style>
